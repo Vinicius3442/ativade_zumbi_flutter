@@ -1,0 +1,31 @@
+name: protocolo_z
+description: "Protocolo Z - Rede Tática de Sobrevivência Apocalíptica (Flutter + Supabase)"
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.10.8
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+  supabase_flutter: ^2.8.4
+  flutter_riverpod: ^2.6.1
+  go_router: ^14.8.1
+  flutter_map: ^7.0.2
+  latlong2: ^0.9.1
+  geolocator: ^13.0.2
+  image_picker: ^1.1.2
+  shared_preferences: ^2.5.2
+  intl: ^0.20.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - supabase/schema.sql
