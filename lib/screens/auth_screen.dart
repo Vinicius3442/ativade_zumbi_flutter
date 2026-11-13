@@ -333,19 +333,34 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 14),
-                  TextButton.icon(
-                    onPressed: _startTacticalSimulation,
-                    icon: const Icon(
-                      Icons.science_rounded,
-                      size: 16,
-                      color: ProtocoloZColors.steelGray,
-                    ),
-                    label: const Text(
-                      'Testar em Modo Simulação Tática (Sandbox Offline)',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: ProtocoloZColors.steelGray,
+                  const SizedBox(height: 16),
+                  SizedBox(
+                    width: double.infinity,
+                    height: 48,
+                    child: OutlinedButton.icon(
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: ProtocoloZColors.radarGreen,
+                        side: const BorderSide(
+                          color: ProtocoloZColors.radarGreen,
+                          width: 1.6,
+                        ),
+                        backgroundColor: ProtocoloZColors.darkGreen.withValues(
+                          alpha: 0.35,
+                        ),
+                      ),
+                      onPressed: _startTacticalSimulation,
+                      icon: const Icon(
+                        Icons.bolt_rounded,
+                        size: 20,
+                        color: ProtocoloZColors.radarGreen,
+                      ),
+                      label: const Text(
+                        'ENTRAR DIRETO (MODO DEMO SEM SUPABASE)',
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w900,
+                          letterSpacing: 0.8,
+                        ),
                       ),
                     ),
                   ),
