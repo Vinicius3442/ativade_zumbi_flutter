@@ -353,6 +353,14 @@ class _MapSheltersScreenState extends ConsumerState<MapSheltersScreen> {
         title: const Text('MAPA TÁTICO & ABRIGOS'),
         actions: [
           IconButton(
+            tooltip: 'Emitir Alerta de Horda neste ponto',
+            onPressed: _openCreateHordeAlertAtSelectedPoint,
+            icon: const Icon(
+              Icons.crisis_alert_rounded,
+              color: ProtocoloZColors.hordeRed,
+            ),
+          ),
+          IconButton(
             tooltip: 'Usar Minha Localização GPS',
             onPressed: _fetchDeviceGps,
             icon: const Icon(
@@ -580,6 +588,86 @@ class _MapSheltersScreenState extends ConsumerState<MapSheltersScreen> {
         label: const Text(
           'NOVO ABRIGO (+15 REP)',
           style: TextStyle(fontWeight: FontWeight.w900),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _openCreateHordeAlertAtSelectedPoint() async {
+    final descCtrl = TextEditingController();
+    String intensity = 'alta';
+
+    await showDialog(
+      context: context,
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setModalState) => AlertDialog(
+          backgroundColor: ProtocoloZColors.cardGray,
+          title: const Text(
+            'REPORTAR HORDA NO MAPA',
+            style: TextStyle(
+              color: ProtocoloZColors.hordeRed,
+              fontWeight: FontWeight.w900,
+              fontSize: 16,
+            ),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Coordenadas selecionadas: (${_selectedPoint.latitude.toStringAsFixed(4)}, ${_selectedPoint.longitude.toStringAsFixed(4)})',
+                style: const TextStyle(
+                  fontSize: 11,
+                  color: ProtocoloZColors.radarGreen,
+                ),
+              ),
+              const SizedBox(height: 12),
+              SegmentedButton<String>(
+                segments: const [
+                  ButtonSegment(value: 'baixa', label: Text('BAIXA')),
+                  ButtonSegment(value: 'media', label: Text('MÉDIA')),
+                  ButtonSegment(value: 'alta', label: Text('ALTA')),
+                ],
+                selected: {intensity},
+                onSelectionChanged: (s) =>
+                    setModalState(() => intensity = s.first),
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: descCtrl,
+                maxLines: 2,
+                decoration: const InputDecoration(
+                  labelText: 'Descrição curta',
+                  hintText: 'Ex: Horda avistada próxima ao cruzamento!',
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: const Text('CANCELAR'),
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: ProtocoloZColors.crimsonRed,
+              ),
+              onPressed: () async {
+                final text = descCtrl.text.trim();
+                if (text.length < 4) return;
+                Navigator.pop(ctx);
+                await ref
+                    .read(gameControllerProvider.notifier)
+                    .createHordeAlert(
+                      latitude: _selectedPoint.latitude,
+                      longitude: _selectedPoint.longitude,
+                      intensity: intensity,
+                      description: text,
+                    );
+              },
+              child: const Text('EMITIR ALERTA'),
+            ),
+          ],
         ),
       ),
     );

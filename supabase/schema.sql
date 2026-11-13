@@ -172,6 +172,16 @@ BEGIN
     VALUES (NEW.id, v_nickname)
     ON CONFLICT (id) DO NOTHING;
 
+    -- Auto-confirma o e-mail para facilitar testes práticos sem bloqueio de SMTP
+    UPDATE auth.users
+    SET email_confirmed_at = COALESCE(email_confirmed_at, now())
+    WHERE id = NEW.id AND email_confirmed_at IS NULL;
+
+    RETURN NEW;
+EXCEPTION WHEN unique_violation THEN
+    INSERT INTO public.profiles (id, nickname)
+    VALUES (NEW.id, v_nickname || '_' || substr(NEW.id::text, 1, 4))
+    ON CONFLICT (id) DO NOTHING;
     RETURN NEW;
 END;
 $$;
@@ -385,7 +395,7 @@ BEGIN
         RAISE EXCEPTION 'Esta expedição já foi concluída.';
     END IF;
 
-    IF now() < v_exp.ends_at THEN
+    IF (now() + INTERVAL '3 seconds') < v_exp.ends_at THEN
         RAISE EXCEPTION 'A expedição ainda não terminou. Aguarde o tempo restante.';
     END IF;
 
